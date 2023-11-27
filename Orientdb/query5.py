@@ -1,0 +1,1 @@
+query5 = 'SELECT out, count (*) as amount FROM (SELECT DISTINCT postID,out FROM body_hyperlink WHERE LIWC_anger > 0) group by out order by amount desc'
