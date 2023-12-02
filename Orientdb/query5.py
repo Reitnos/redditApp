@@ -83,6 +83,6 @@ def query5(X,db, benchmark = False):
 
     if(benchmark):
         end = time.time()
-        print(f"Query 5 - Database {db} took {end - start} seconds")
-        return
+        #print(f"Query 5 - Database {db} took {end - start} seconds")
+        return end - start
     return (G, None, top_reddit)

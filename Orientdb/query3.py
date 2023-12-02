@@ -85,6 +85,6 @@ def query3(db,benchmark = False):
 
     if benchmark:
         end = time.time()
-        print(f"Query 3 - Database {db} took {end - start} seconds")
-        return
+        #print(f"Query 3 - Database {db} took {end - start} seconds")
+        return end-start
     return (G, None, top_reddit) 

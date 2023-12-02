@@ -1,14 +1,14 @@
+
 import requests
 import base64
 import json
 import networkx as nx
 import time
+def query1(X,db, benchmark = False):
+    
 
-
-from bs4 import BeautifulSoup
-
-def query4(n,db, benchmark = False):
     if(benchmark):
+        #start the timer
         start = time.time()
     connecturl = f'http://localhost:2480/connect/{db}'
     #Authorization HTTP header
@@ -24,26 +24,24 @@ def query4(n,db, benchmark = False):
     headers = {'Authorization': f'Basic {credentials_encoded}'}
     response = requests.get(connecturl, headers=headers)
 
-
-
-
+    #print(f"Connection: {response.status_code}")
 
     table = 'title_hyperlink'
     if db == 'new_db':
         table = 'body_hyperlink'
-    query4 = f'SELECT in, count(*) as amount FROM {table} GROUP BY in ORDER BY amount desc LIMIT {n}'
+    query2 = f"SELECT subreddit_name from (select expand(out('{table}'))from Subreddit where out('{table}').subreddit_name CONTAINS '{X}') where subreddit_name <> '{X}'"
 
-    queryurl = f'http://localhost:2480/query/new_db/sql/{query4}'
+
+    queryurl = f'http://localhost:2480/query/new_db/sql/{query2}'
     response = requests.get(queryurl, headers=headers)
 
 
-
-
-
     # Parse HTML content
-    # soup = BeautifulSoup(response.content, 'html.parser')
 
+    #soup = BeautifulSoup(response.content, 'html.parser')
     #print(soup.prettify())
+
+
 
     #create a graph visualization of the json response
 
@@ -54,35 +52,30 @@ def query4(n,db, benchmark = False):
     # Create a directed graph
     G = nx.DiGraph()
 
-    top_list = []
+    names = []
     # Add nodes
     for node in response_json['result']:
 
-        in_rid = node['in']
+        #get the rid of the subreddit
+        name = node['subreddit_name']
         #remove the # from the rid
-        in_rid = in_rid[1:]
-        in_name = ''
-        query_for_name_in = f"SELECT * FROM subreddit WHERE @rid = '{in_rid}'"
-        queryurl = f'http://localhost:2480/query/new_db/sql/{query_for_name_in}'
-        response = requests.get(queryurl, headers=headers)
-        #save the response as a json
-        response_json_names = json.loads(response.text)
-
-        for name in response_json_names['result']:
-            in_name = name['subreddit_name']
-
-        if(benchmark == False):
-          
-            G.add_node(in_name)
-            top_list.append(in_name)
+        names.append(name)
         
 
-    #disconnect
+
+        if(benchmark == False):
+            G.add_node(name)
+    
+
+        
+
     disconnecturl= 'http://localhost:2480/disconnect'
     response = requests.get(disconnecturl, headers=headers)
-
     if(benchmark):
         end = time.time()
-        #print(f"Query 4 - Database {db} took {end - start} seconds")
-        return end - start
-    return (G, None, top_list)
+       # print(f"Query 1 - Database {db} took {end - start} seconds")
+        return (end-start)
+    else:
+        
+        return (G,names) 
+

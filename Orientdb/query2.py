@@ -98,8 +98,8 @@ def query2(X,db, benchmark = False):
     response = requests.get(disconnecturl, headers=headers)
     if(benchmark):
         end = time.time()
-        print(f"Query 2 - Database {db} took {end - start} seconds")
-        return
+       # print(f"Query 2 - Database {db} took {end - start} seconds")
+        return end - start
     else:
         edge_labels = {(u, v): f"is_negative = {G.edges[u, v]['is_negative']}" for u, v in G.edges}
         return (G, edge_labels) 
