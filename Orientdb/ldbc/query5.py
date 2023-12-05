@@ -33,7 +33,7 @@ LIMIT 20
 query5sql = """
 SELECT forum.title as forumTitle, Count(*) as postCount
 FROM(
-MATCH {class:Person, as:person, where:(id = :personId)}-knows-{as: otherPerson, where: ($matched.person != $currentMatch) while: ($depth < 2)} 
+MATCH {class:Person, as:person, where:(id = :personId)}-knows-{as: otherPerson, where: ($matched.person != $currentMatch) while: ($depth < 2)},
       {as:otherPerson}.(inE("hasMember"){where: (creationDate > :minDate)}.bothV()){as:forum}-containerOf->{as:post}
 RETURN forum,post)
 GROUP BY forum
