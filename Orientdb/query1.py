@@ -29,10 +29,10 @@ def query1(X,db, benchmark = False):
     table = 'title_hyperlink'
     if db == 'new_db':
         table = 'body_hyperlink'
-    query2 = f"SELECT subreddit_name from (select expand(out('{table}'))from Subreddit where out('{table}').subreddit_name CONTAINS '{X}') where subreddit_name <> '{X}'"
+    query1 = f"SELECT DISTINCT subreddit_name from (select expand(out('{table}'))from Subreddit where out('{table}').subreddit_name CONTAINS '{X}') where subreddit_name <> '{X}'"
 
 
-    queryurl = f'http://localhost:2480/query/new_db/sql/{query2}'
+    queryurl = f'http://localhost:2480/query/{db}/sql/{query1}'
     response = requests.get(queryurl, headers=headers)
 
 

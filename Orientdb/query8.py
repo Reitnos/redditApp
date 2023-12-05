@@ -38,7 +38,7 @@ def query8(X,db, benchmark = False):
     query8_1 = f"select DISTINCT subreddit_name from (select expand(out('title_hyperlink')) from Subreddit WHERE subreddit_name = '{X}')"
     
     
-    queryurl = f'http://localhost:2480/query/new_db/sql/{query8_1}'
+    queryurl = f'http://localhost:2480/query/{db}/sql/{query8_1}'
     response = requests.get(queryurl, headers=headers)
 
 
@@ -63,14 +63,14 @@ def query8(X,db, benchmark = False):
         query8_2 = f"SELECT count(*) as neg_count FROM (select from title_hyperlink where out.subreddit_name = '{name}') where is_negative = true"
         query8_3 = f"SELECT count(*) as pos_count FROM (select from title_hyperlink where out.subreddit_name = '{name}') where is_negative = false"
 
-        queryurl = f'http://localhost:2480/query/new_db/sql/{query8_2}'
+        queryurl = f'http://localhost:2480/query/{db}/sql/{query8_2}'
 
         response = requests.get(queryurl, headers=headers)
         response_json = json.loads(response.text)
 
         neg_count = response_json['result'][0]['neg_count']
 
-        queryurl = f'http://localhost:2480/query/new_db/sql/{query8_3}'
+        queryurl = f'http://localhost:2480/query/{db}/sql/{query8_3}'
         response = requests.get(queryurl, headers=headers)
         response_json = json.loads(response.text)
 

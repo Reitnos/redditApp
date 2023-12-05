@@ -34,7 +34,7 @@ def query6(X,db, benchmark = False):
         table = 'body_hyperlink'
     query6 = f"SELECT DISTINCT subreddit_name FROM (SELECT expand(out('{table}').out('{table}')) FROM Subreddit WHERE subreddit_name = '{X}')"
     
-    queryurl = f'http://localhost:2480/query/new_db/sql/{query6}'
+    queryurl = f'http://localhost:2480/query/{db}/sql/{query6}'
     response = requests.get(queryurl, headers=headers)
 
 

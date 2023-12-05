@@ -14,7 +14,7 @@ from query8 import query8
 
 databases = ['reddit_db_1k','reddit_db_5k','reddit_db_10k','reddit_db_100k']
 #default_db = 'new_db'
-default_db = 'reddit_db_10k'
+default_db = 'reddit_db_1k'
 default_reddit = 'leagueoflegends'
 
 benchmark_totals = {"reddit_db_1k": 0, "reddit_db_5k": 0, "reddit_db_10k": 0, "reddit_db_100k": 0}
@@ -96,7 +96,9 @@ def query_2(benchmark = False):
             benchmark_totals[db] += avg
             
     else:
-        gr, edge_labels = query2(x, default_db)
+        gr, edge_labels,names = query2(x, default_db)
+        for name in names:
+            print(name)
         draw(gr, edge_labels)
 
   

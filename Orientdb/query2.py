@@ -29,7 +29,7 @@ def query2(X,db, benchmark = False):
         table = 'body_hyperlink'
     query2 = f"SELECT FROM( SELECT expand(outE('{table}')) FROM subreddit WHERE subreddit_name = '{X}') WHERE is_negative = true"
 
-    queryurl = f'http://localhost:2480/query/new_db/sql/{query2}'
+    queryurl = f'http://localhost:2480/query/{db}/sql/{query2}'
     response = requests.get(queryurl, headers=headers)
 
 
@@ -48,7 +48,7 @@ def query2(X,db, benchmark = False):
 
     # Create a directed graph
     G = nx.DiGraph()
-
+    names = []
     # Add nodes
     for node in response_json['result']:
 
@@ -59,7 +59,7 @@ def query2(X,db, benchmark = False):
 
         in_name = ''
         query_for_name_in = f"SELECT * FROM subreddit WHERE @rid = '{in_rid}'"
-        queryurl = f'http://localhost:2480/query/new_db/sql/{query_for_name_in}'
+        queryurl = f'http://localhost:2480/query/{db}/sql/{query_for_name_in}'
         response = requests.get(queryurl, headers=headers)
         #save the response as a json
         response_json_names = json.loads(response.text)
@@ -75,7 +75,7 @@ def query2(X,db, benchmark = False):
         out_rid = out_rid[1:]
         out_name = '' 
         query_for_name_out = f"SELECT * FROM subreddit WHERE @rid = '{out_rid}'"
-        queryurl = f'http://localhost:2480/query/new_db/sql/{query_for_name_out}'
+        queryurl = f'http://localhost:2480/query/{db}/sql/{query_for_name_out}'
         response = requests.get(queryurl, headers=headers)
         #save the response as a json
         response_json_names = json.loads(response.text)
@@ -89,6 +89,7 @@ def query2(X,db, benchmark = False):
             G.add_edge(in_name, out_name)
             #add a label to the edge
             G.edges[in_name, out_name]['is_negative'] = node['is_negative']
+            names.append(in_name)
             #G.edges[in_name, out_name]['LIWC_anger'] = node['LIWC_anger']
 
         # G.edges[edge['in'], edge['out']]['is_negative'] = edge['is_negative']
@@ -102,5 +103,5 @@ def query2(X,db, benchmark = False):
         return end - start
     else:
         edge_labels = {(u, v): f"is_negative = {G.edges[u, v]['is_negative']}" for u, v in G.edges}
-        return (G, edge_labels) 
+        return (G, edge_labels, names) 
 

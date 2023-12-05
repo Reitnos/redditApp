@@ -33,7 +33,7 @@ def query3(db,benchmark = False):
     if db == 'new_db':
         table = 'body_hyperlink'
     query3 = f'SELECT in, count(*) as amount FROM (SELECT FROM {table} WHERE is_negative = false) GROUP BY in ORDER BY amount desc LIMIT 1'
-    queryurl = f'http://localhost:2480/query/new_db/sql/{query3}'
+    queryurl = f'http://localhost:2480/query/{db}/sql/{query3}'
     response = requests.get(queryurl, headers=headers)
 
 
@@ -63,7 +63,7 @@ def query3(db,benchmark = False):
         in_rid = in_rid[1:]
         in_name = ''
         query_for_name_in = f"SELECT * FROM subreddit WHERE @rid = '{in_rid}'"
-        queryurl = f'http://localhost:2480/query/new_db/sql/{query_for_name_in}'
+        queryurl = f'http://localhost:2480/query/{db}/sql/{query_for_name_in}'
         response = requests.get(queryurl, headers=headers)
         #save the response as a json
         response_json_names = json.loads(response.text)

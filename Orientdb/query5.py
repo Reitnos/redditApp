@@ -33,7 +33,7 @@ def query5(X,db, benchmark = False):
     if db == 'new_db':
         table = 'body_hyperlink'
     query5 = f'SELECT out, count (*) as amount FROM (SELECT DISTINCT postID,out FROM {table} WHERE LIWC_{X} > 0) group by out order by amount desc LIMIT 1'
-    queryurl = f'http://localhost:2480/query/new_db/sql/{query5}'
+    queryurl = f'http://localhost:2480/query/{db}/sql/{query5}'
     response = requests.get(queryurl, headers=headers)
 
 
@@ -63,7 +63,7 @@ def query5(X,db, benchmark = False):
         out_rid = out_rid[1:]
         out_name = ''
         query_for_name_out = f"SELECT * FROM subreddit WHERE @rid = '{out_rid}'"
-        queryurl = f'http://localhost:2480/query/new_db/sql/{query_for_name_out}'
+        queryurl = f'http://localhost:2480/query/{db}/sql/{query_for_name_out}'
         response = requests.get(queryurl, headers=headers)
         #save the response as a json
         response_json_names = json.loads(response.text)
