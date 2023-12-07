@@ -35,6 +35,8 @@ def query8(X,db, benchmark = False):
     if db == 'new_db':
         table = 'body_hyperlink'
     
+
+    
     query8_1 = f"select DISTINCT subreddit_name from (select expand(out('title_hyperlink')) from Subreddit WHERE subreddit_name = '{X}')"
     
     

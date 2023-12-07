@@ -39,7 +39,7 @@ FROM(
 SELECT liker, message, like.creationDate AS likeTime, person, friend
 FROM(
 MATCH 
-  {class:Person, as:person, where:(id = :personId)}<-hasCreator-{as:message}.(inE("likes"){as:lile}.bothV()){as:liker},
+  {class:Person, as:person, where:(id = :personId)}<-hasCreator-{as:message}.(inE("likes"){as:like}.bothV()){as:liker},
   {as:person}-knows-{as:friend, where ($matched.person = liker)}
 RETURN post,otherTag,friend)
 )

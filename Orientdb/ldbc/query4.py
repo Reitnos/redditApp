@@ -38,3 +38,4 @@ ORDER BY postCount DESC, tagName ASC
 LIMIT 10
 """
 
+#you might have errors just beacuse of you are using as: inside where clause.

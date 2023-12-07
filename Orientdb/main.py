@@ -14,7 +14,7 @@ from query8 import query8
 
 databases = ['reddit_db_1k','reddit_db_5k','reddit_db_10k','reddit_db_100k']
 #default_db = 'new_db'
-default_db = 'reddit_db_1k'
+default_db = 'reddit_db_100k'
 default_reddit = 'leagueoflegends'
 
 benchmark_totals = {"reddit_db_1k": 0, "reddit_db_5k": 0, "reddit_db_10k": 0, "reddit_db_100k": 0}
