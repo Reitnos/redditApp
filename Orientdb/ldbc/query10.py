@@ -26,34 +26,36 @@ query10cypher = """
 """
 
 query10sql = """
-WITH tmp as (SELECT DISTINCT otherPerson, city, person
-FROM(
-SELECT person, city, otherPerson, datetime(otherPerson.birthday) as birthday
-FROM(
-MATCH 
-	{class:Person, as:person, where:(id = :personId)}-knows-{as: otherPerson, where: ($matched.person != $currentMatch) while: ($depth = 1)},
-	{as:otherPerson}<-isLocatedIn-{as: city}
-RETURN person, city, otherPerson))
-WHERE  (birthday.month=:month AND birthday.day>=21) OR
-        (birthday.month=(:month%12)+1 AND birthday.day<22)
-SELECT
-   	  friend.id AS personId,
-      friend.firstName AS personFirstName,
-      friend.lastName AS personLastName,
+SELECT	
+	  person.p_personid AS personId,
+      person.p_firstname AS personFirstName,
+      person.p_lastname AS personLastName,
       total AS commonInterestScore,
-      friend.gender AS personGender,
-      city.name AS personCityName
+      person.p_gender AS personGender,
+      city.pl_name AS personCityName
 FROM(
-SELECT friend,post, Count(*) as total
+SELECT person, post, city, Count(*) as total
 FROM(
-MATCH
-     {class: Person, as:friend, where: (friend.id = tmp.otherPerson.id))<-hasCreator-(as: post)},
-     {as:post}-hasTag->()<-hasInterest-{as:strt, where strt = person}]
-RETURN     
-    	friend,post)
+SELECT person, person.in('has_m_creatorid') as post , person.in('has_m_creatorid').out('message_tag').in('person_tag') as start, city
+FROM(
+SELECT p, person, city, birthday
+FROM(
+SELECT p, city, person, person.p_birthday as birthday
+FROM(
+
+MATCH 
+	{class:Person, as:p, where:(p_personid = 32985348834824)} -knows-> {as:person, maxdepth:1, where:($matched.p <> $currentMatch), pathAlias:pPath},
+    {as:person}-has_p_placeid->{as: city}
+RETURN 
+	p, person, city))
+WHERE (birthday.format('MM') = '05' AND birthday.format('dd') >= '21' ) OR
+		(birthday.format('MM') = '06' AND birthday.format('dd') < '22'))
 )
+GROUP BY person, post, city
+)
+
 GROUP BY friend
 ORDER BY commonInterestScore DESC, personId ASC
 LIMIT 10 
+        
 """
-
