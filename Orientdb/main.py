@@ -14,7 +14,7 @@ from query8 import query8
 
 databases = ['reddit_db_1k','reddit_db_5k','reddit_db_10k','reddit_db_100k']
 #default_db = 'new_db'
-default_db = 'reddit_db_100k'
+default_db = 'reddit_db_1k'
 default_reddit = 'leagueoflegends'
 
 benchmark_totals = {"reddit_db_1k": 0, "reddit_db_5k": 0, "reddit_db_10k": 0, "reddit_db_100k": 0}
@@ -284,8 +284,8 @@ def query_8(benchmark = False):
 
         x = input("Subreddit X name \n >>")
     # TODO make query
-    names = []
-    negativities = []
+    # names = []
+    # negativities = []9
     if(benchmark):
         for db in databases:
             sum = 0
@@ -298,13 +298,14 @@ def query_8(benchmark = False):
             benchmark_totals[db] += avg
            
     else:
-        names,negativities = query8(x, default_db)
-        print(f"Subreddits mentioned in {x} and their negativity:")
-        for i in range(len(names)):
-            if(negativities[i]):
-                print(f"{names[i]}: more often negative")
-            else:
-                print(f"{names[i]}: more often not-negative")
+        # names,negativities = query8(x, default_db)
+        # print(f"Subreddits mentioned in {x} and their negativity:")
+        # for i in range(len(names)):
+        #     if(negativities[i]):
+        #         print(f"{names[i]}: more often negative")
+        #     else:
+        #         print(f"{names[i]}: more often not-negative")
+        query8(x, default_db)
    
     # TODO print result
     print(" _ ")
