@@ -25,22 +25,22 @@ LIMIT 20
 
 query12sql = """
 
-select 
-    friend.id AS personId,
-    friend.firstName AS personFirstName,
-    friend.lastName AS personLastName,
-    tag.name AS tagNames,
-    count(DISTINCT comment) AS replyCount
-from (
-MATCH 
-	{class:Person, as:person, where:(id = :personId)}-knows-{as: friend}<-hasCreator-{as: comment}-replyOf->{as:post}-hasTag->{as:tag}-hasType->{as:tagClass, where: (tagClass.name = :tagClassName)}
+SELECT 
+	friend.p_personid AS personId,
+    friend.p_firstname AS personFirstName,
+    friend.p_lastname AS personLastName,
+    tag.t_name AS tagNames,
+    count(distinct(comment)) AS replyCount
+FROM(
+  MATCH 
+	{class:Person, as:person, where:(p_personid = 32985348834824)}-knows-{as: friend}<-has_m_creatorid-{as: comment}-has_m_c_replyof->{as:post}-message_tag->{as:tag}-has_t_tagclassid->{as:tagClass}
 RETURN
-    friend,tag,comment,post,tagClass
-)
+    friend,tag,comment,post,tagClass)
+WHERE tagClass.tc_name = 'OfficeHolder'
 GROUP BY friend,tag
 ORDER BY
     replyCount DESC,
-    toInteger(personId) ASC
+    personId ASC
 LIMIT 20
 
 
