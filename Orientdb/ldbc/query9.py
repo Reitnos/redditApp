@@ -23,19 +23,23 @@ LIMIT 20
 
 query9sql = """
 
+SELECT 
+	person.p_personid AS personId,
+    person.p_firstname AS personFirstName,
+    person.p_lastname AS personLastName,
+    message.m_messageid AS commentOrPostId,
+    message.m_content + message.m_ps_imagefile AS commentOrPostContent,
+    message.m_creationdate AS commentOrPostCreationDate
+FROM(
 MATCH 
-	{class:Person, as:person, where:(id = :personId)}-knows-{as: otherPerson, where: ($matched.person != $currentMatch) while: ($depth < 2)},
-	{as:otherPerson}<-hasCreator-{as: message, where: (message.creationDate < :maxDate)}
-RETURN
-	otherPerson.id AS personId,
-    otherPerson.firstName AS personFirstName,
-    otherPerson.lastName AS personLastName,
-    message.id AS commentOrPostId,
-    coalesce(message.content,message.imageFile) AS commentOrPostContent,
-    message.creationDate AS commentOrPostCreationDate
+	{class:Person, as:p, where:(p_personid = 32985348834824)} -knows-> {as:person, maxdepth:2, where:($matched.p <> $currentMatch), pathAlias:pPath},
+	{as:person}<-has_m_creatorid-{as: message}
+return person,message)
+WHERE date(message.m_creationdate,'yyyy-MM-dd HH:mm:ss') < date('2012-06-31 10:11:18.875+02', 'yyyy-MM-dd HH:mm:ss')
 ORDER BY
     commentOrPostCreationDate DESC,
-    message.id ASC
+    message.m_messageid ASC
 LIMIT 20
+ 
 
 """
