@@ -28,17 +28,19 @@ LIMIT 10
 """
 
 query6sql = """
-SELECT otherTag.name as tagName, COUNT(*) as postCount
+
+SELECT tagName, COUNT(*) as postCount
 FROM(
-MATCH {class:Person, as:person, where:(id = :personId)}-knows-{as: otherPerson, where: ($matched.person != $currentMatch) while: ($depth < 2)},
-      {as:otherPerson}<-hasCreator-{as:post},
-      {as:post}-hasTag->{as:otherTag, where: (otherTag.name != :tagName)},
-      {as:post}-hasTag->{as:tag, where: (otherTag.name = :tagName)}
-      
-RETURN post,otherTag)
-GROUP BY otherTag
+MATCH  
+		{class:Person, as:p, where:(p_personid = 32985348834824)} -knows-> {as:person, maxdepth:2, where:($matched.p <> $currentMatch), pathAlias:pPath},
+      {as:person}<-has_m_creatorid-{as:post},
+      {as:post}-message_tag->{as:otherTag}
+RETURN post,otherTag.t_name as tagName)
+WHERE tagName <> 'Saddam_Hussein'
+GROUP BY tagName
 ORDER BY
     postCount DESC,
     tagName ASC
 LIMIT 10
 """
+
