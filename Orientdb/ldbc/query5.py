@@ -31,16 +31,18 @@ LIMIT 20
 
 
 query5sql = """
-SELECT forum.title as forumTitle, Count(*) as postCount
+SELECT forum.f_title as forumTitle, Count(*) as postCount
 FROM(
-MATCH {class:Person, as:person, where:(id = :personId)}-knows-{as: otherPerson, where: ($matched.person != $currentMatch) while: ($depth < 2)},
-      {as:otherPerson}.(inE("hasMember"){where: (creationDate > :minDate)}.bothV()){as:forum}-containerOf->{as:post}
-RETURN forum,post)
+MATCH
+   {class:Person, as:p, where:(p_personid = 32985348834824)} -knows-> {as:person, maxdepth:2, where:($matched.p <> $currentMatch), pathAlias:pPath},
+    {as:person}.(inE("forum_person"){where: (date(fp_joindate, 'yyyy-MM-dd HH:mm:ss') >= date('2012-06-31 10:11:18.875+02', 'yyyy-MM-dd HH:mm:ss'))}.bothV()){as:forum}-has_m_ps_forumid-{as:post}
+  RETURN 
+  	forum,post)
 GROUP BY forum
 ORDER BY
     postCount DESC,
-    forum.id ASC
-LIMIT 2O
+    forum.f_forumid ASC
+LIMIT 20
 """
 
 
