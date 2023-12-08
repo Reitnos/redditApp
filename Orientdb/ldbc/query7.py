@@ -24,30 +24,32 @@ LIMIT 20
 """
 
 query7sql = """
-SELECT 
-	liker.id AS personId,
-    liker.firstName AS personFirstName,
-    liker.lastName AS personLastName,
+SELECT
+	liker.p_personid AS personId,
+    liker.p_firstname AS personFirstName,
+    liker.p_lastname AS personLastName,
     latestTime AS likeCreationDate,
-    message.id AS commentOrPostId,
-    coalesce(message.content, message.imageFile) AS commentOrPostContent,
-    toInteger(floor(toFloat(latestTime - message.creationDate)/1000.0)/60.0) AS minutesLatency,
-    if(eval("friend IS NULL"), true , false))
+    message.m_messageid AS commentOrPostId,
+    message.m_content + message.m_ps_imagefile AS commentOrPostContent,
+     (date(latestTime, 'yyyy-MM-dd HH:mm:ss') -
+    date(message.m_creationdate, 'yyyy-MM-dd HH:mm:ss')) as Latency
 FROM(
 SELECT message,liker,person,min(likeTime) as latestTime, friend
-FROM(
-SELECT liker, message, like.creationDate AS likeTime, person, friend
+FROM
+(SELECT message, liker, person, message.oute('likes').l_creationdate AS likeTime, friend
 FROM(
 MATCH 
-  {class:Person, as:person, where:(id = :personId)}<-hasCreator-{as:message}.(inE("likes"){as:like}.bothV()){as:liker},
-  {as:person}-knows-{as:friend, where ($matched.person = liker)}
-RETURN post,otherTag,friend)
+  {class:Person, as:person, where:(p_personid = 32985348834824)}<-has_m_creatorid-{as:message}.(outE("likes").inV()){as:liker},
+  {as:person}-knows->{as:friend}
+RETURN liker,person,message,friend)
 )
 GROUP BY message,liker,person
 )
 ORDER BY
     likeCreationDate DESC,
-    toInteger(personId) ASC
+    personId ASC
 LIMIT 20
 
+
 """
+
