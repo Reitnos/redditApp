@@ -20,14 +20,14 @@ LIMIT 20
 
 query8sql = """
 MATCH 
-  {class:Person, as:person, where:(id = :personId)}<-hasCreator-{as:message}<-replyOf-{as:comment}-hasCreator->{as:commentAuthor}
-RETURN 
- 	commentAuthor.id AS personId,
-    commentAuthor.firstName AS personFirstName,
-    commentAuthor.lastName AS personLastName,
-    comment.creationDate AS commentCreationDate,
-    comment.id AS commentId,
-    comment.content AS commentContent
+  {class:Person, as:person, where:(p_personid = 32985348834824)}<-has_m_creatorid-{as:message}<-has_m_c_replyof-{as:comment}-has_m_creatorid->{as:commentAuthor}
+RETURN
+	commentAuthor.p_personid AS personId,
+    commentAuthor.p_firstname AS personFirstName,
+    commentAuthor.p_lastname AS personLastName,
+    comment.m_creationdate AS commentCreationDate,
+    comment.m_messageid AS commentId,
+    comment.m_content AS commentContent
 ORDER BY
     commentCreationDate DESC,
     commentId ASC
